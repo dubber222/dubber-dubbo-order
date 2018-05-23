@@ -1,0 +1,3 @@
+com\dubber\dubbo\OrderRequest.class
+com\dubber\dubbo\IOrderService.class
+com\dubber\dubbo\OrderResponse.class

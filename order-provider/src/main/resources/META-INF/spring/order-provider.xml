@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--当前项目在整个分布式架构里面的唯一名称，计算依赖关系的标签-->
+    <dubbo:application name="order-provider" owner="dubber"/>
+
+    <dubbo:monitor protocol="registry"/>
+
+    <!--dubbo这个服务所要暴露的服务地址所对应的注册中心-->
+    <dubbo:registry protocol="zookeeper"
+                    address="zookeeper://192.168.49.135:2181?backup=192.168.49.137:2181,192.168.49.136:2181"/>
+
+    <!-- 1、不使用注册中心
+        order生产者不使用注册中心，消费者（user）直接配置生产者暴露出的地址
+            如：dubbo://10.10.29.39:20880/com.dubber.dubbo.IOrderService?anyhost=true&application=order-provider&dubbo=2.5.3&interface=com.dubber.dubbo.IOrderService&methods=doOrder&owner=dubber&pid=59952&side=provider&timestamp=1527051849143, dubbo version: 2.5.3, current host: 127.0.0.1
+    -->
+    <!--<dubbo:registry address="N/A" />-->
+
+
+    <!--当前服务发布所依赖的协议；webserovice、Thrift、Hessain、http-->
+    <dubbo:protocol name="dubbo" port="20880"/>
+
+    <!--服务发布的配置，需要暴露的服务接口-->
+    <dubbo:service
+            interface="com.dubber.dubbo.IOrderService"
+            ref="orderService"/>
+
+    <!--Bean bean定义-->
+    <bean id="orderService" class="com.dubber.dubbo.OrderServiceImpl"/>
+
+</beans>
