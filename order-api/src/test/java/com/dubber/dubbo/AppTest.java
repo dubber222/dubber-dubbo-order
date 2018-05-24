@@ -1,8 +1,6 @@
 package com.dubber.dubbo;
 
 import static org.junit.Assert.assertTrue;
-
-import com.sun.deploy.util.StringUtils;
 import org.junit.Test;
 
 /**

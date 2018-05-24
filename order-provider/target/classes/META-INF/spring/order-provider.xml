@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://code.alibabatech.com/schema/dubbo        http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://code.alibabatech.com/schema/dubbo
+        http://code.alibabatech.com/schema/dubbo/dubbo.xsd" default-autowire="byName">
 
+    <context:component-scan base-package="com.dubber"/>
     <!--当前项目在整个分布式架构里面的唯一名称，计算依赖关系的标签-->
     <dubbo:application name="order-provider" owner="dubber"/>
 
+    <!-- 启动监控中心监控 -->
     <dubbo:monitor protocol="registry"/>
 
     <!--dubbo这个服务所要暴露的服务地址所对应的注册中心-->
     <dubbo:registry protocol="zookeeper"
-                    address="zookeeper://192.168.49.135:2181?backup=192.168.49.137:2181,192.168.49.136:2181"/>
+                    address="zookeeper://192.168.0.110:2181?backup=192.168.0.104:2181,192.168.0.106:2181"/>
 
     <!-- 1、不使用注册中心
         order生产者不使用注册中心，消费者（user）直接配置生产者暴露出的地址
@@ -20,15 +28,15 @@
     <!--<dubbo:registry address="N/A" />-->
 
 
-    <!--当前服务发布所依赖的协议；webserovice、Thrift、Hessain、http-->
+    <!--当前服务发布所依赖的协议；dubbo、webserovice、Thrift、Hessain、http-->
     <dubbo:protocol name="dubbo" port="20880"/>
+    <!-- 多协议 -->
+    <dubbo:protocol name="hessian" port="8090" server="jetty"/>
 
     <!--服务发布的配置，需要暴露的服务接口-->
+    <!-- 可以指定协议 protocol="hessian"，也可以指定多个 protocol = "dubbo,hessian"-->
     <dubbo:service
             interface="com.dubber.dubbo.IOrderService"
-            ref="orderService"/>
-
-    <!--Bean bean定义-->
-    <bean id="orderService" class="com.dubber.dubbo.OrderServiceImpl"/>
+            ref="orderService" protocol="hessian,dubbo"/>
 
 </beans>

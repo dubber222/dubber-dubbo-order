@@ -1,12 +1,15 @@
 package com.dubber.dubbo;
 
+import org.springframework.stereotype.Service;
+
 /**
  * Created on 2018/5/23.
  *
  * @author dubber
  */
-public class OrderServiceImpl implements IOrderService{
 
+@Service(value = "orderService")
+public class OrderServiceImpl implements IOrderService{
     @Override
     public OrderResponse doOrder(OrderRequest orderRequest) {
 
