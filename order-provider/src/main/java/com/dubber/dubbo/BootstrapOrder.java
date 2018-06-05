@@ -7,8 +7,7 @@ import com.alibaba.dubbo.container.Main;
  *
  * @author dubber
  */
-public class App {
-
+public class BootstrapOrder {
     public static void main(String[] args) {
         Main.main(args);
     }
