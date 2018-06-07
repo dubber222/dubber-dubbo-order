@@ -20,6 +20,6 @@ public class OrderOperationImpl implements IOrderOperation {
 
     @Override
     public void inserOrder() {
-        orderJdbcTemplate.execute("INSERT INTO `order`(`price`,`createTime`) VALUES(20,NOW())");
+        orderJdbcTemplate.execute("INSERT `order`(`status`,price,order_time) VALUES(1,10,NOW())");
     }
 }

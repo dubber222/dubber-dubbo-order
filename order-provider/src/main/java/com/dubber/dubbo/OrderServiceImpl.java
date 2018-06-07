@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
 import javax.annotation.Resource;
-import javax.transaction.*;
+import javax.transaction.SystemException;
+import javax.transaction.UserTransaction;
 
 /**
  * Created on 2018/5/23.
@@ -17,7 +18,7 @@ import javax.transaction.*;
  */
 
 @Service(value = "orderService")
-public class OrderServiceImpl implements IOrderService{
+public class OrderServiceImpl implements IOrderService {
 
     @Resource
     IOrderOperation orderOperation;
@@ -30,23 +31,28 @@ public class OrderServiceImpl implements IOrderService{
     @Override
     public OrderResponse doOrder(OrderRequest orderRequest) {
         OrderResponse orderResponse = new OrderResponse();
+        String result = "";
         // 下单后更新余额
         UserTransaction userTransaction = springTransactionManager.getUserTransaction();
         try {
             userTransaction.begin();
             orderOperation.inserOrder();
             Response response = userBalanceService.updateUserBalance();
-
             System.out.println(response.toString());
             userTransaction.commit();
+            if (null != response && response.getCode().equals("200")) {
+                result = "下单并更新用户余额成功";
+            }else{
+                result = "下单成功";
+            }
             orderResponse.setCode("200");
-            orderResponse.setRemark("成功！");
+            orderResponse.setRemark(result);
         } catch (Exception e) {
             try {
                 userTransaction.rollback();
             } catch (SystemException e1) {
                 e1.printStackTrace();
-            }finally {
+            } finally {
                 orderResponse.setCode("503");
                 orderResponse.setRemark("失败回滚！");
             }
